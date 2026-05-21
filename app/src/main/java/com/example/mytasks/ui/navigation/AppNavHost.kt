@@ -104,7 +104,7 @@ fun AppNavHost(
             val categoryViewModel: CategoryManagementViewModel = viewModel(
                 factory = CategoryManagementViewModelFactory(app.categoryRepository)
             )
-            
+
             CategoryManagementScreen(
                 type = type,
                 viewModel = categoryViewModel,
