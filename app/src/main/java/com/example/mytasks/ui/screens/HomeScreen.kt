@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Label
 import androidx.compose.material.icons.rounded.*
@@ -38,12 +40,29 @@ fun HomeScreen(
     onLongTermGoalsClick: () -> Unit
 ) {
     val categories by viewModel.shortTermCategories.collectAsStateWithLifecycle(initialValue = emptyList())
+    val scrollState = rememberScrollState()
+    val isDark = isSystemInDarkTheme()
+
+    // Dynamically choose a beautiful, non-neon premium gradient for the Long-term goals box
+    val goalGradientColors = if (isDark) {
+        listOf(
+            Color(0xFF1E293B), // Deep slate matching your container dark
+            Color(0xFF2E3A52)  // Slightly lighter slate blue for a premium subtle sheen
+        )
+    } else {
+        listOf(
+            MaterialTheme.colorScheme.primary,   // Primary Light (0xFF5D5FEF)
+            MaterialTheme.colorScheme.secondary // Secondary Light for a smooth rich blend
+        )
+    }
+
+    // Dynamic text/icon color for inside the long-term goals card
+    val goalContentColor = if (isDark) MaterialTheme.colorScheme.onBackground else Color.White
 
     Scaffold(
         topBar = {
             Column {
-                // Lowering the heading to a balanced position
-                Spacer(modifier = Modifier.height(44.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
@@ -63,9 +82,13 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(
+                    top = innerPadding.calculateTopPadding() + 12.dp,
+                    bottom = innerPadding.calculateBottomPadding() + 8.dp
+                )
+                .padding(horizontal = 20.dp)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 text = "Focus Areas",
@@ -74,12 +97,13 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Grid displaying up to 6 categories + View All
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 800.dp),
                 userScrollEnabled = false
             ) {
                 items(categories) { category ->
@@ -92,7 +116,6 @@ fun HomeScreen(
                     }
                 }
 
-                // View All button fills the remaining space
                 item(span = { GridItemSpan(if (categories.size % 2 == 0) 2 else 1) }) {
                     CategoryCard(
                         name = "View All",
@@ -105,6 +128,8 @@ fun HomeScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
                 text = "Growth",
                 style = MaterialTheme.typography.titleLarge,
@@ -115,16 +140,9 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(110.dp)
+                    .height(100.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary
-                            )
-                        )
-                    )
+                    .background(Brush.horizontalGradient(colors = goalGradientColors))
                     .clickable { onLongTermGoalsClick() },
                 contentAlignment = Alignment.Center
             ) {
@@ -135,7 +153,11 @@ fun HomeScreen(
                 ) {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = Color.White.copy(alpha = 0.2f),
+                        color = if (isDark) {
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                        } else {
+                            Color.White.copy(alpha = 0.2f)
+                        },
                         modifier = Modifier.size(48.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
@@ -143,7 +165,7 @@ fun HomeScreen(
                                 imageVector = Icons.Rounded.AutoGraph,
                                 contentDescription = null,
                                 modifier = Modifier.size(28.dp),
-                                tint = Color.White
+                                tint = if (isDark) MaterialTheme.colorScheme.primary else Color.White
                             )
                         }
                     }
@@ -151,18 +173,17 @@ fun HomeScreen(
                         Text(
                             text = "Long-term Goals",
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.White,
+                            color = goalContentColor,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "Visualize your future",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.8f)
+                            color = goalContentColor.copy(alpha = 0.7f)
                         )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -183,7 +204,7 @@ fun CategoryCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = color.copy(alpha = if (isDark) 0.25f else 0.12f)
+            containerColor = color.copy(alpha = if (isDark) 0.15f else 0.12f) // Slightly dropped dark alpha for cleaner look
         )
     ) {
         if (isFullWidth) {
@@ -216,7 +237,7 @@ fun CategoryCard(
             ) {
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = color.copy(alpha = 0.2f),
+                    color = color.copy(alpha = 0.15f),
                     modifier = Modifier.size(40.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {

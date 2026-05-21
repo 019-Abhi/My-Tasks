@@ -1,5 +1,8 @@
 package com.example.mytasks.ui.navigation
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,7 +26,36 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
+        startDestination = Screen.Splash.route,
+        // Highly optimized, ultra-snappy transitions (150ms) for an "instant" high-performance feel
+        enterTransition = {
+            fadeIn(animationSpec = tween(150, easing = LinearOutSlowInEasing)) +
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(150, easing = LinearOutSlowInEasing)
+                    )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(150, easing = LinearOutSlowInEasing)) +
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(150, easing = LinearOutSlowInEasing)
+                    )
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(150, easing = LinearOutSlowInEasing)) +
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(150, easing = LinearOutSlowInEasing)
+                    )
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(150, easing = LinearOutSlowInEasing)) +
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(150, easing = LinearOutSlowInEasing)
+                    )
+        }
     ) {
         composable(Screen.Splash.route) {
             SplashScreen {
