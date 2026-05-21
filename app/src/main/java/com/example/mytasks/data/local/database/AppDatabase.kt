@@ -11,13 +11,10 @@ import com.example.mytasks.data.local.dao.TaskDao
 import com.example.mytasks.data.local.entity.CategoryEntity
 import com.example.mytasks.data.local.entity.LongTermGoalEntity
 import com.example.mytasks.data.local.entity.TaskEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Database(
     entities = [TaskEntity::class, LongTermGoalEntity::class, CategoryEntity::class],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -43,14 +40,14 @@ abstract class AppDatabase : RoomDatabase() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         // Pre-populate default categories using raw SQL to avoid recursion
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Groceries', 'ST')")
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Study', 'ST')")
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Work', 'ST')")
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Personal', 'ST')")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Groceries', 'ST', 0)")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Study', 'ST', 0)")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Work', 'ST', 0)")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Personal', 'ST', 0)")
                         
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Coding', 'LT')")
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Fitness', 'LT')")
-                        db.execSQL("INSERT INTO categories (name, type) VALUES ('Music', 'LT')")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Coding', 'LT', 0)")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Fitness', 'LT', 0)")
+                        db.execSQL("INSERT INTO categories (name, type, isStarred) VALUES ('Music', 'LT', 0)")
                     }
                 })
                 .build()

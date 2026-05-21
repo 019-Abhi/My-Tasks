@@ -2,8 +2,10 @@ package com.example.mytasks.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mytasks.data.local.entity.CategoryEntity
@@ -38,24 +41,23 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
+            Column {
+                // Lowering the heading to a balanced position
+                Spacer(modifier = Modifier.height(44.dp))
+                CenterAlignedTopAppBar(
+                    title = {
                         Text(
                             text = "My Tasks",
-                            style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.ExtraBold
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent
+                    )
                 )
-            )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -63,10 +65,8 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
-            
             Text(
                 text = "Focus Areas",
                 style = MaterialTheme.typography.titleLarge,
@@ -74,11 +74,13 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.primary
             )
 
+            // Grid displaying up to 6 categories + View All
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.weight(1f)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.weight(1f),
+                userScrollEnabled = false
             ) {
                 items(categories) { category ->
                     CategoryCard(
@@ -89,12 +91,14 @@ fun HomeScreen(
                         onCategoryClick(category)
                     }
                 }
-                
-                item {
+
+                // View All button fills the remaining space
+                item(span = { GridItemSpan(if (categories.size % 2 == 0) 2 else 1) }) {
                     CategoryCard(
                         name = "View All",
                         icon = Icons.Rounded.GridView,
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.secondary,
+                        isFullWidth = categories.size % 2 == 0
                     ) {
                         onViewAllClick()
                     }
@@ -111,7 +115,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(110.dp)
                     .clip(RoundedCornerShape(24.dp))
                     .background(
                         Brush.horizontalGradient(
@@ -127,18 +131,18 @@ fun HomeScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(20.dp)
                 ) {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = Color.White.copy(alpha = 0.2f),
-                        modifier = Modifier.size(56.dp)
+                        modifier = Modifier.size(48.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Rounded.AutoGraph,
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp),
+                                modifier = Modifier.size(28.dp),
                                 tint = Color.White
                             )
                         }
@@ -146,19 +150,19 @@ fun HomeScreen(
                     Column {
                         Text(
                             text = "Long-term Goals",
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "Visualize your future",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.8f)
                         )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -168,46 +172,71 @@ fun CategoryCard(
     name: String,
     icon: ImageVector,
     color: Color,
+    isFullWidth: Boolean = false,
     onClick: () -> Unit
 ) {
+    val isDark = isSystemInDarkTheme()
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f)
+            .then(if (isFullWidth) Modifier.height(72.dp) else Modifier.aspectRatio(1.4f))
             .clickable { onClick() },
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = color.copy(alpha = 0.15f)
+            containerColor = color.copy(alpha = if (isDark) 0.25f else 0.12f)
         )
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = color.copy(alpha = 0.2f),
-                modifier = Modifier.size(64.dp)
+        if (isFullWidth) {
+            Row(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = name,
-                        modifier = Modifier.size(32.dp),
-                        tint = color
-                    )
-                }
+                Icon(
+                    imageVector = icon,
+                    contentDescription = name,
+                    modifier = Modifier.size(24.dp),
+                    tint = color
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = color
+                )
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = color
-            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = color.copy(alpha = 0.2f),
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = name,
+                            modifier = Modifier.size(20.dp),
+                            tint = color
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = color,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

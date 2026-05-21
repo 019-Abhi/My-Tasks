@@ -1,6 +1,7 @@
 package com.example.mytasks.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -8,9 +9,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mytasks.data.local.entity.CategoryEntity
+import com.example.mytasks.ui.theme.StarredColor
 import com.example.mytasks.ui.theme.getCategoryColor
 import com.example.mytasks.ui.viewmodel.CategoryManagementViewModel
 
@@ -37,6 +37,7 @@ fun CategoryManagementScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var categoryToRename by remember { mutableStateOf<CategoryEntity?>(null) }
     var categoryToDelete by remember { mutableStateOf<CategoryEntity?>(null) }
+    val isDark = isSystemInDarkTheme()
 
     Scaffold(
         topBar = {
@@ -101,7 +102,7 @@ fun CategoryManagementScreen(
                             .clickable { onCategoryClick(category) },
                         shape = RoundedCornerShape(24.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = color.copy(alpha = 0.15f)
+                            containerColor = color.copy(alpha = if (isDark) 0.25f else 0.12f)
                         )
                     ) {
                         Column(
@@ -113,8 +114,24 @@ fun CategoryManagementScreen(
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
+                                // Star button only for Short-Term categories
+                                if (type == "ST") {
+                                    IconButton(
+                                        onClick = { viewModel.toggleStar(category) },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = if (category.isStarred) Icons.Rounded.Star else Icons.Rounded.StarBorder,
+                                            contentDescription = "Star",
+                                            tint = if (category.isStarred) StarredColor else color,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+
                                 IconButton(
                                     onClick = { categoryToRename = category },
                                     modifier = Modifier.size(32.dp)

@@ -1,6 +1,7 @@
 package com.example.mytasks.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FormatStrikethrough
@@ -48,7 +49,7 @@ fun LongTermGoalsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text(categoryName, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -58,8 +59,9 @@ fun LongTermGoalsScreen(
             )
         },
         floatingActionButton = {
-            // Strike-through button - only formatting tool visible
-            SmallFloatingActionButton(
+            // Strike-through button - elevated for better visibility
+            LargeFloatingActionButton(
+                modifier = Modifier.size(72.dp),
                 onClick = {
                     val start = textFieldValue.selection.start
                     val end = textFieldValue.selection.end
@@ -79,9 +81,14 @@ fun LongTermGoalsScreen(
                     }
                 },
                 containerColor = MaterialTheme.colorScheme.tertiary,
-                contentColor = MaterialTheme.colorScheme.onTertiary
+                contentColor = MaterialTheme.colorScheme.onTertiary,
+                shape = RoundedCornerShape(24.dp)
             ) {
-                Icon(Icons.Rounded.FormatStrikethrough, contentDescription = "Strike-through")
+                Icon(
+                    Icons.Rounded.FormatStrikethrough, 
+                    contentDescription = "Strike-through",
+                    modifier = Modifier.size(32.dp)
+                )
             }
         }
     ) { padding ->
@@ -106,10 +113,12 @@ fun LongTermGoalsScreen(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.2f
+                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.3f
                 )
             )
         }

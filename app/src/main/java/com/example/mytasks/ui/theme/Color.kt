@@ -2,61 +2,74 @@ package com.example.mytasks.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Ultra-Vibrant & Energetic Material 3 Palette
-// High energy colors for a modern, productivity-focused look
-
-// Primary: Electric Violet
-val PrimaryLight = Color(0xFF7C4DFF)
+// Light Theme - Modern Indigo & Slate
+val PrimaryLight = Color(0xFF5D5FEF) // Royal Indigo
 val OnPrimaryLight = Color(0xFFFFFFFF)
-val PrimaryContainerLight = Color(0xFFEDE7F6)
-val OnPrimaryContainerLight = Color(0xFF311B92)
+val PrimaryContainerLight = Color(0xFFE0E0FF)
+val OnPrimaryContainerLight = Color(0xFF110066)
 
-// Secondary: Teal
-val SecondaryLight = Color(0xFF00BFA5)
+val SecondaryLight = Color(0xFF535670)
 val OnSecondaryLight = Color(0xFFFFFFFF)
-val SecondaryContainerLight = Color(0xFFE0F2F1)
-val OnSecondaryContainerLight = Color(0xFF004D40)
+val SecondaryContainerLight = Color(0xFFD9DAF6)
+val OnSecondaryContainerLight = Color(0xFF10142B)
 
-// Tertiary: Rose
-val TertiaryLight = Color(0xFFF50057)
+val TertiaryLight = Color(0xFF7E5260)
 val OnTertiaryLight = Color(0xFFFFFFFF)
-val TertiaryContainerLight = Color(0xFFFCE4EC)
-val OnTertiaryContainerLight = Color(0xFF880E4F)
+val TertiaryContainerLight = Color(0xFFFFD8E4)
+val OnTertiaryContainerLight = Color(0xFF31101D)
 
-val PrimaryDark = Color(0xFFB39DDB)
-val OnPrimaryDark = Color(0xFF311B92)
-val PrimaryContainerDark = Color(0xFF4527A0)
-val OnPrimaryContainerDark = Color(0xFFEDE7F6)
+val BackgroundLight = Color(0xFFF8F9FF) // Soft Blue-ish tint for fresh look
+val SurfaceLight = Color(0xFFFFFFFF)
+val OnBackgroundLight = Color(0xFF1A1C2E)
+val OnSurfaceLight = Color(0xFF1A1C2E)
+val SurfaceVariantLight = Color(0xFFE2E2EC)
+val OnSurfaceVariantLight = Color(0xFF45464F)
 
-val SecondaryDark = Color(0xFF80CBC4)
-val OnSecondaryDark = Color(0xFF004D40)
-val SecondaryContainerDark = Color(0xFF00695C)
-val OnSecondaryContainerDark = Color(0xFFE0F2F1)
+// Dark Theme - Deep Obsidian & Lavender
+val PrimaryDark = Color(0xFFB8BBFF)
+val OnPrimaryDark = Color(0xFF1A1D8E)
+val PrimaryContainerDark = Color(0xFF3235A6)
+val OnPrimaryContainerDark = Color(0xFFE0E0FF)
 
-val TertiaryDark = Color(0xFFF48FB1)
-val OnTertiaryDark = Color(0xFF880E4F)
-val TertiaryContainerDark = Color(0xFFAD1457)
-val OnTertiaryContainerDark = Color(0xFFFCE4EC)
+val SecondaryDark = Color(0xFFBCC2FF)
+val OnSecondaryDark = Color(0xFF1B235E)
+val SecondaryContainerDark = Color(0xFF333B76)
+val OnSecondaryContainerDark = Color(0xFFD9DAF6)
 
-// Vibrant Category Colors
-val CategoryGroceries = Color(0xFF43A047) // Vibrant Green
-val CategoryStudy = Color(0xFF1E88E5)     // Brilliant Blue
-val CategoryWork = Color(0xFFF4511E)      // Deep Orange
-val CategoryOthers = Color(0xFF8E24AA)    // Vibrant Purple
-val CategoryPersonal = Color(0xFFD81B60)   // Hot Pink
-val CategoryFitness = Color(0xFFFB8C00)    // Amber/Orange
-val CategoryCoding = Color(0xFF00ACC1)     // Cyan
-val CategoryMusic = Color(0xFFF06292)      // Light Pink
+val TertiaryDark = Color(0xFFEFB8C8)
+val OnTertiaryDark = Color(0xFF492532)
+val TertiaryContainerDark = Color(0xFF633B48)
+val OnTertiaryContainerDark = Color(0xFFFFD8E4)
+
+val BackgroundDark = Color(0xFF0F101A) // Deep Night
+val SurfaceDark = Color(0xFF181926)    // Slightly lighter card surface
+val OnBackgroundDark = Color(0xFFE4E4EB)
+val OnSurfaceDark = Color(0xFFE4E4EB)
+val SurfaceVariantDark = Color(0xFF45464F)
+val OnSurfaceVariantDark = Color(0xFFC5C6D0)
+
+// Star Color - Modern Marigold (Vibrant but sophisticated)
+val StarredColor = Color(0xFFF7B500)
+
+// Category Colors - Adjusted for "Excellent" high-end look
+val CategoryGreen = Color(0xFF1DB954)  // Vibrant Mint/Green
+val CategoryBlue = Color(0xFF00A3FF)   // Clear Sky Blue
+val CategoryRed = Color(0xFFFF4D4D)    // Soft Coral Red
+val CategoryPurple = Color(0xFFBD00FF) // Neon Purple
+val CategoryPink = Color(0xFFFF007A)   // Hot Pink
+val CategoryOrange = Color(0xFFFF9900)  // Vivid Orange
+val CategoryCyan = Color(0xFF00D1FF)   // Electric Cyan
+val CategoryIndigo = Color(0xFF5D5FEF) // Matching Primary Indigo
 
 fun getCategoryColor(name: String): Color {
     return when (name.lowercase()) {
-        "groceries" -> CategoryGroceries
-        "study" -> CategoryStudy
-        "work" -> CategoryWork
-        "personal" -> CategoryPersonal
-        "coding" -> CategoryCoding
-        "fitness" -> CategoryFitness
-        "music" -> CategoryMusic
-        else -> CategoryOthers
+        "groceries" -> CategoryGreen
+        "study" -> CategoryBlue
+        "work" -> CategoryRed
+        "personal" -> CategoryPink
+        "coding" -> CategoryCyan
+        "fitness" -> CategoryOrange
+        "music" -> CategoryPurple
+        else -> CategoryIndigo
     }
 }

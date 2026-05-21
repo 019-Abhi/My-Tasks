@@ -10,7 +10,14 @@ import kotlinx.coroutines.flow.map
 class HomeViewModel(private val repository: CategoryRepository) : ViewModel() {
 
     val shortTermCategories: Flow<List<CategoryEntity>> =
-        repository.getCategoriesByType("ST").map { it.take(3) }
+        repository.getCategoriesByType("ST").map { allCategories ->
+            // Sort by starred first, then by name (or id)
+            val starred = allCategories.filter { it.isStarred }
+            val unstarred = allCategories.filter { !it.isStarred }
+            
+            val combined = (starred + unstarred).take(6)
+            combined
+        }
 }
 
 class HomeViewModelFactory(private val repository: CategoryRepository) : ViewModelProvider.Factory {

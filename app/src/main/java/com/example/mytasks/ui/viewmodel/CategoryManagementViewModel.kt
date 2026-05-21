@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mytasks.data.local.entity.CategoryEntity
 import com.example.mytasks.data.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class CategoryManagementViewModel(private val repository: CategoryRepository) : ViewModel() {
@@ -22,6 +23,21 @@ class CategoryManagementViewModel(private val repository: CategoryRepository) : 
     fun renameCategory(category: CategoryEntity, newName: String) {
         viewModelScope.launch {
             repository.updateCategory(category.copy(name = newName))
+        }
+    }
+
+    fun toggleStar(category: CategoryEntity) {
+        viewModelScope.launch {
+            if (!category.isStarred) {
+                // Check if we already have 6 starred categories of this type
+                val starredCount = repository.getCategoriesByType(category.type).first()
+                    .count { it.isStarred }
+                if (starredCount >= 6) {
+                    // Maybe show a message to the user? For now, just don't star.
+                    return@launch
+                }
+            }
+            repository.updateCategory(category.copy(isStarred = !category.isStarred))
         }
     }
 

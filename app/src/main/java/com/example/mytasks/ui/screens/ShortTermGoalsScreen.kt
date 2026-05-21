@@ -35,7 +35,7 @@ fun ShortTermGoalsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text(categoryName, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -52,10 +52,8 @@ fun ShortTermGoalsScreen(
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(24.dp)
             ) {
-                Icon(
-                    Icons.Rounded.Add,
-                    contentDescription = "Add Category",
-                )            }
+                Icon(Icons.Rounded.Add, contentDescription = "Add Task")
+            }
         }
     ) { padding ->
         if (tasks.isEmpty()) {
@@ -77,7 +75,7 @@ fun ShortTermGoalsScreen(
                     .fillMaxSize()
                     .padding(padding),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(tasks, key = { it.id }) { task ->
                     TaskItem(
@@ -106,20 +104,26 @@ fun TaskItem(task: TaskEntity, onComplete: () -> Unit) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
         )
     ) {
         ListItem(
+            colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
             headlineContent = {
                 Text(
                     task.description,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             supportingContent = task.deadline?.let {
                 {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
                         Icon(
                             Icons.Rounded.CalendarMonth,
                             contentDescription = null,
@@ -127,14 +131,20 @@ fun TaskItem(task: TaskEntity, onComplete: () -> Unit) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(dateFormatter.format(Date(it)))
+                        Text(
+                            dateFormatter.format(Date(it)),
+                            style = MaterialTheme.typography.bodySmall
+                        )
                     }
                 }
             },
             trailingContent = {
                 Checkbox(
                     checked = false,
-                    onCheckedChange = { if (it) onComplete() }
+                    onCheckedChange = { if (it) onComplete() },
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                    )
                 )
             }
         )
@@ -159,22 +169,24 @@ fun AddTaskDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Task") },
+        title = { Text("New Task", fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Task description") },
+                    label = { Text("What needs to be done?") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
+                    shape = RoundedCornerShape(12.dp),
                     singleLine = true
                 )
 
                 OutlinedCard(
                     onClick = { showDatePicker = true },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -183,13 +195,24 @@ fun AddTaskDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = datePickerState.selectedDateMillis?.let {
-                                dateFormatter.format(Date(it))
-                            } ?: "No deadline set",
-                            style = MaterialTheme.typography.bodyLarge
+                        Column {
+                            Text(
+                                "Deadline",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = datePickerState.selectedDateMillis?.let {
+                                    dateFormatter.format(Date(it))
+                                } ?: "No deadline set",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                        Icon(
+                            Icons.Rounded.CalendarMonth, 
+                            contentDescription = "Select Date",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Icon(Icons.Rounded.CalendarMonth, contentDescription = "Select Date")
                     }
                 }
             }
@@ -201,9 +224,10 @@ fun AddTaskDialog(
                         onConfirm(description, datePickerState.selectedDateMillis)
                     }
                 },
-                enabled = description.isNotBlank()
+                enabled = description.isNotBlank(),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Add")
+                Text("Create Task")
             }
         },
         dismissButton = {
